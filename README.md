@@ -1,25 +1,20 @@
-# scGHSOM Web Server
+# OT-scGHSOM
 
-**scGHSOM-Web-Server** is an ongoing project aimed at transforming the original [scGHSOM single-cell clustering algorithm](https://ieeexplore.ieee.org/document/11098883) into a fully functional **web-based analysis platform**.
+**OT-scGHSOM** is a framework that integrates hierarchical clustering with **Optimal Transport (OT)** to analyze the flow of cell populations across different time points.
 
-This work is being prepared for submission to the **Nucleic Acids Research (NAR) — Web Server Issue** in late December, with the goal of making hierarchical SOM–based single-cell clustering accessible to biomedical researchers worldwide.
+The method is built on top of **scGHSOM hierarchical clustering**, and is designed to quantify **cluster-to-cluster transitions** by estimating the proportion of cells that move from one cluster to another over time.
 
----
+By combining hierarchical structure with optimal transport, OT-scGHSOM allows users to examine **population dynamics at the cluster level**. This provides an intuitive way to understand how cellular populations evolve, expand, contract, or transition between states in longitudinal datasets.
 
-## 🌐 Live Demo (Development Deployment)
-
-A development version of the **scGHSOM Web Server** is currently online:
-
-👉 **[Click here to access the server](https://scghsom.changlabtw.com/)**
+Using this tool, users can visualize the **flow proportions between clusters at different time points**, helping to reveal potential biological trajectories or population shifts.
 
 ---
 
-## 🔧 Repository Status
+## Example Usage
 
-This repository represents the **local deployment version** of the scGHSOM Web Server and is intended to demonstrate the core architecture of the platform.
+To run the visualization using the example dataset, execute the following command:
 
-Please note that this repository is **no longer actively updated**, and it does **not** include recent cloud deployment improvements or production-level configurations.
-
-All ongoing development, optimization, and deployment updates are maintained in a separate internal repository.
+```bash
+python optimal_transport/visualize/ot_map.py --data=CART_0320 --tau1=0.5 --tau2=0.5 --source=day0 --target=day7
 
 ---
