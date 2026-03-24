@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>scGHSOM — {{ title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=33"> 
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">scGHSOM</div>
+      <ul class="nav-links">
+
+        <!-- Run Analysis -->
+        <li><a href="{{ url_for('home') }}">Run Analysis</a></li>
+
+        <!-- Results (新整合頁面) -->
+        <li><a href="{{ url_for('results') }}">Results</a></li>
+
+        <!-- Tutorial -->
+        <li><a href="{{ url_for('tutorial') }}">Tutorial</a></li>
+
+        <!-- Reference -->
+        <li><a href="{{ url_for('reference') }}">Reference</a></li>
+
+        <!-- Contact -->
+        <li><a href="{{ url_for('contact') }}">Contact</a></li>
+
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Results</h1>
+<p>Please enter your Job ID to view all results.</p>
+
+<p class="result-guide-entry">
+  ❓
+  <a href="/tutorial/explain" target="_blank">
+    Not sure how to interpret your results? Click here to open a detailed explanation.
+  </a>
+</p>
+
+<!-- ======================= Job Summary Section ======================= -->
+<div class="summary-section">
+
+  <!-- 搜尋區 -->
+  <div class="search-box">
+    <input type="text" id="jobIdInput" placeholder="Please enter your Job ID"
+           value="{{ job_id if job_id else '' }}">
+    <button id="searchBtn">Search</button>
+  </div>
+
+  <!-- ⭐ View Example Button -->
+  <div style="margin-top: 10px;">
+    <a href="/results/example">
+      <button class="submit-btn"
+              style="background-color:#5b77d1; padding:8px 18px; border-radius:6px;">
+        View Example Result
+      </button>
+    </a>
+  </div>
+
+  <!-- 提示訊息 -->
+  <p id="summaryMessage" class="message"></p>
+
+  <!-- 指標結果（預設隱藏） -->
+  <div id="summaryResult" style="display:none;">
+
+    <div class="metrics-container">
+      <div class="metrics-box">
+        <h3>External Metrics</h3>
+        <p>ARI (↑) : <span id="ariValue">—</span></p>
+        <p>NMI (↑) : <span id="nmiValue">—</span></p>
+      </div>
+
+      <div class="metrics-box">
+        <h3>Internal Metrics</h3>
+        <p>CH (↑) : <span id="chValue">—</span></p>
+        <p>DB (↓) : <span id="dbValue">—</span></p>
+      </div>
+    </div>
+
+    <div class="leaf-section">
+      <p>Leaf Number: <span id="leafValue">—</span></p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================= Feature Map Section ======================= -->
+<div id="featureSection" class="feature-section" style="display:none; margin-top:40px;">
+  <h2>Cluster Feature Map</h2>
+  <p>You can view the Dash-based feature map for this job.</p>
+
+  <button id="featureBtn" class="submit-btn">
+    View Feature Map
+  </button>
+
+  <p id="featureMessage" class="message"></p>
+</div>
+
+<!-- ======================= Distribution Map Section ======================= -->
+<div id="distributionSection" class="distribution-section" style="display:none; margin-top:40px;">
+  <h2>Cluster Distribution Map</h2>
+  <p>The distribution map will be displayed below once it is ready.</p>
+
+  <div class="distribution-result">
+    <iframe id="distFrame" class="dist-frame"
+            style="width:100%; height:600px; border:none;">
+    </iframe>
+  </div>
+</div>
+
+<!-- ======================= Scripts ======================= -->
+<script>
+async function runSearch(jobId) {
+
+  const msg = document.getElementById("summaryMessage");
+
+  if (!jobId) {
+    msg.textContent = "Please enter a Job ID.";
+    msg.style.color = "red";
+    return;
+  }
+
+  // Reset UI
+  msg.textContent = "Searching...";
+  msg.style.color = "gray";
+
+  document.getElementById("summaryResult").style.display = "none";
+  document.getElementById("featureSection").style.display = "none";
+  document.getElementById("distributionSection").style.display = "none";
+
+  // Fetch summary API
+  const response = await fetch(`/api/job/${jobId}`);
+  const data = await response.json();
+
+  if (!data.found) {
+    msg.textContent = "❌ Cannot find your Job ID.";
+    msg.style.color = "red";
+    return;
+  }
+
+  // Fill summary
+  msg.textContent = "✅ Job found!";
+  msg.style.color = "green";
+
+  document.getElementById("ariValue").textContent = data.metrics.ARI;
+  document.getElementById("nmiValue").textContent = data.metrics.NMI;
+  document.getElementById("chValue").textContent = data.metrics.CH;
+  document.getElementById("dbValue").textContent = data.metrics.DB;
+  document.getElementById("leafValue").textContent = data.metrics.Leaf;
+
+  document.getElementById("summaryResult").style.display = "block";
+
+  // =================== Feature Map Section ===================
+  document.getElementById("featureSection").style.display = "block";
+  document.getElementById("featureBtn").onclick = () => {
+    window.open(`/feature-map/${jobId}`, "_blank");
+  };
+
+  // =================== Distribution Map Section ===================
+  document.getElementById("distributionSection").style.display = "block";
+  document.getElementById("distFrame").src = `/distribution-map/${jobId}`;
+}
+
+// 搜尋按鈕事件
+document.getElementById("searchBtn").addEventListener("click", async function () {
+  const jobId = document.getElementById("jobIdInput").value.trim();
+  runSearch(jobId);
+});
+</script>
+
+<!-- =========================== -->
+<!-- ⭐ AUTO QUERY（新版，不需要 auto=1） -->
+<!-- =========================== -->
+<script>
+window.addEventListener("DOMContentLoaded", function () {
+
+    const presetJobId = "{{ job_id }}";  // 後端模板可能預先填入
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlJobId = urlParams.get("job_id");
+
+    let finalJobId = null;
+
+    // 1) 後端模板指定的 job_id（例如 example）
+    if (presetJobId) {
+        finalJobId = presetJobId;
+    }
+    // 2) URL 上的 job_id（例如 run.js redirect or bookmark）
+    else if (urlJobId) {
+        finalJobId = urlJobId;
+    }
+
+    // 如果有 job_id → 自動查詢
+    if (finalJobId) {
+        document.getElementById("jobIdInput").value = finalJobId;
+        runSearch(finalJobId);
+    }
+});
+</script>
+
+
+{% endblock %}
+
+
+
+
+

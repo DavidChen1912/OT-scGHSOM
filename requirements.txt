@@ -1,0 +1,9 @@
+Flask
+Werkzeug
+dash
+plotly
+pandas
+numpy
+scikit-learn
+python-dateutil
+pytz

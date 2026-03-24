@@ -1,0 +1,13 @@
+workingDirectory=./
+outputDirectory=./output/CART_0320-0.5-0.5
+namePrefix=CART_0320
+vectorFileName=./data/CART_0320_ghsom.in
+sparseData=yes
+isNormalized=false
+randomSeed=7
+xSize=2
+ySize=2
+learnRate=0.7
+numIterations=20000
+tau=0.5
+tau2=0.5

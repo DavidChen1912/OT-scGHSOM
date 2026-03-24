@@ -1,0 +1,472 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Run Analysis</h1>
+<p>Please upload your dataset and set the parameters below.</p>
+
+<!-- ===================== Quick Guide Entry ===================== -->
+<p id="quickGuideEntry"
+   style="margin:12px 0 18px; font-size:15px; color:#2f5fa7;">
+  ❓
+  <span id="openQuickGuide"
+        style="cursor:pointer; text-decoration:underline;">
+    Not sure how to prepare your dataset or fill in these fields?
+    Click here to see a quick guide.
+  </span>
+</p>
+<!-- ========================================== -->
+
+<div class="upload-section">
+  <form id="analysis-form" enctype="multipart/form-data" onsubmit="return false;">
+    <div class="upload-container">
+
+      <!-- ===================== 左邊：上傳檔案 ===================== -->
+      <div class="upload-left">
+        <label class="upload-label">Click here to upload your file</label>
+        <input type="file" id="fileInput" name="file" accept=".csv">
+
+        <!-- ⭐ Local FileReader Progress -->
+        <div id="uploadProgressContainer" style="display:none; margin-top:10px;">
+          <p id="uploadFileSize" style="margin:4px 0; color:#444;"></p>
+
+          <div style="width:100%; background:#eee; height:16px; border-radius:8px;">
+            <div id="uploadProgressBar"
+                style="width:0%; height:100%; background:#5b77d1;
+                       border-radius:8px; transition:width 0.2s;"></div>
+            </div>
+
+          <p id="uploadPercentText"
+             style="margin-top:4px; font-size:14px; color:#333;">
+          </p>
+        </div>
+
+        <p style="margin-top: 6px; color:#666; font-size:14px;">
+          Maximum upload size: <strong>300 MB</strong>
+        </p>
+
+        <!-- ⭐ Load Example -->
+        <button id="loadExampleBtn" type="button"
+                style="margin-top: 12px; width: 100%; padding: 12px;
+                       font-size: 16px; font-weight: 600;
+                       background-color: #5b77d1; color: white;
+                       border: none; border-radius: 6px; cursor: pointer;">
+          Load Example
+        </button>
+
+        <!-- ⭐ Preview + Download -->
+        <div style="margin-top:12px; display:flex; gap:10px;">
+          <button id="previewBtn" type="button"
+                  style="flex:1; padding:10px; background:#2e8b8b; color:white;
+                  border:none; border-radius:6px; cursor:pointer;" disabled>
+            Preview
+          </button>
+
+          <button id="downloadBtn" type="button"
+                  style="flex:1; padding:10px; background:#2b7d2b; color:white;
+                  border:none; border-radius:6px; cursor:pointer;" disabled>
+            Download
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ===================== 右邊：參數設定 ===================== -->
+      <div class="upload-right">
+        <p style="font-style: italic; color: #444; margin-top: 0;">
+          Tau₁ and Tau₂ should be values between 0 and 1.
+        </p>
+
+        <label for="tau1">Set Tau₁:</label>
+        <input type="number" id="tau1" name="tau1" step="0.01" min="0" max="1"
+               value="{{ tau1 or 0.1 }}" required><br>
+
+        <label for="tau2">Set Tau₂:</label>
+        <input type="number" id="tau2" name="tau2" step="0.01" min="0" max="1"
+               value="{{ tau2 or 0.1 }}" required><br>
+
+        <label for="index">Set Index (optional):</label>
+        <input type="text" id="index" name="index" placeholder="Enter column index"><br>
+
+        <label for="label">Label column (optional):</label>
+        <input type="text" id="label" name="label" placeholder="e.g., cell_type">
+      </div>
+    </div>
+
+    <!-- Gmail 區塊 -->
+    <div class="email-section">
+      <label for="gmail">Your Gmail address (optional):</label>
+      <input type="email" id="gmail" name="gmail"
+             placeholder="you@gmail.com" value="{{ gmail or '' }}">
+    </div>
+
+    <input type="hidden" id="example_flag" value="false">
+
+    <div class="submit-section">
+      <button id="submitBtn" class="submit-btn">Submit</button>
+      <button type="reset" class="submit-btn"
+              style="background-color: #ccc; color: #333; margin-left: 10px;">
+        Reset
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- ===================== Job message box（保留但不再使用） ===================== -->
+<div id="jobMessageBox" style="margin-top:25px;"></div>
+
+<!-- ===================== Quick Guide Overlay ===================== -->
+<div id="quickGuideOverlay"
+     style="display:none; position:fixed; top:0; left:0;
+            width:100%; height:100%;
+            background:rgba(0,0,0,0.45);
+            z-index:99998;
+            justify-content:center; align-items:center;">
+
+  <div class="quick-guide"
+       style="background:white; width:85%; max-width:900px;
+              max-height:85%; overflow:auto;
+              border-radius:10px; padding:28px;
+              box-shadow:0 0 18px rgba(0,0,0,0.25);
+              position:relative;">
+
+    <button id="closeQuickGuide"
+            style="position:absolute; top:16px; right:16px;
+                   padding:6px 14px;
+                   border:none; border-radius:6px;
+                   background:#5b77d1; color:white;
+                   cursor:pointer;">
+      Close
+    </button>
+
+    <h2 style="margin-top:0;">
+      How to prepare your dataset and parameters
+    </h2>
+
+    <p style="color:#555;">
+      <b>scGHSOM</b> is an <b>unsupervised hierarchical clustering algorithm</b>
+      designed for <b>single-cell expression data analysis</b>.
+      The input dataset is expected to contain the following types of columns:
+    </p>
+
+    <ul>
+      <li><b>Index</b> – sample or cell identifiers (optional)</li>
+      <li><b>Feature</b> – numerical expression values used for clustering</li>
+      <li><b>Label</b> – known cell-type annotations for evaluation (optional)</li>
+    </ul>
+
+    <hr>
+
+    <h3>1. Index column (optional)</h3>
+    <p>
+      If your dataset contains an <b>index column</b>
+      (e.g., cell IDs or barcodes),
+      please specify its column name in the <b>Index</b> field.
+    </p>
+    <p style="color:#555;">
+      This prevents the index from being mistakenly treated as a feature.
+      Leave this field blank if no index column is present.
+    </p>
+
+    <hr>
+
+    <h3>2. Label column (optional)</h3>
+    <p>
+      If true cell-type annotations are available,
+      specify the corresponding column name in the <b>Label</b> field.
+    </p>
+    <ul>
+      <li>Enables correct computation of external evaluation metrics</li>
+      <li>Allows result interpretation based on known cell types</li>
+    </ul>
+    <p style="color:#b00020;">
+      The label column does <b>not</b> affect the clustering process itself.
+      Leave this field blank if labels are unavailable.
+    </p>
+
+    <hr>
+
+    <h3>3. Feature columns</h3>
+    <p>
+      All remaining columns are treated as <b>features</b>,
+      typically representing protein or gene expression levels.
+    </p>
+    <ul>
+      <li>All feature columns must be numeric</li>
+      <li>
+        If categorical or string-valued features are present,
+        <b>scGHSOM will automatically exclude them from the analysis.</b> 
+      </li>
+    </ul>
+
+    <hr>
+
+    <h3>4. Parameter settings (Tau₁ / Tau₂)</h3>
+    <p>
+      <b>Tau₁</b> controls horizontal expansion of the hierarchy.<br>
+      <b>Tau₂</b> controls vertical expansion.
+    </p>
+    <p>
+      Both parameters range from <b>0 to 1</b>.
+      If unsure, the default value <b>0.1</b> is recommended.
+    </p>
+    <p style="color:#555;">
+      For improved clustering accuracy, explore values around 0.1
+      using a step size of 0.05.
+    </p>
+
+  </div>
+</div>
+
+<!-- ===================== Quick Guide Script ===================== -->
+<script>
+document.getElementById("openQuickGuide").onclick = () => {
+  document.getElementById("quickGuideOverlay").style.display = "flex";
+};
+document.getElementById("closeQuickGuide").onclick = () => {
+  document.getElementById("quickGuideOverlay").style.display = "none";
+};
+document.getElementById("quickGuideOverlay").onclick = (e) => {
+  if (e.target.id === "quickGuideOverlay") {
+    document.getElementById("quickGuideOverlay").style.display = "none";
+  }
+};
+</script>
+
+
+<!-- ===================== Preview Modal ===================== -->
+<div id="previewModal"
+     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.45); z-index:9999;
+            justify-content:center; align-items:center;">
+
+  <div id="modalBox"
+       style="background:white; padding:20px; width:85%; max-height:80%;
+              overflow:auto; border-radius:10px; position:relative;">
+
+    <button id="closePreviewBtn"
+            style="position:absolute; top:10px; right:10px;
+                   padding:8px 14px; background:#5b77d1; color:white;
+                   border:none; border-radius:6px; cursor:pointer;">
+      Close
+    </button>
+
+    <h2 style="margin-top:40px;">Preview (first 100 rows)</h2>
+    <div id="previewContent" style="overflow:auto;"></div>
+
+  </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- ⭐⭐⭐ NEW: Phase 1 Uploading Modal (Do NOT close page) -->
+<!-- ============================================================= -->
+<div id="uploadingModal"
+     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.55); z-index:100000;
+            justify-content:center; align-items:center;">
+
+  <div style="background:white; width:80%; max-width:420px; padding:30px;
+              border-radius:12px; text-align:center; box-shadow:0 0 10px rgba(0,0,0,0.2);">
+
+    <div class="loader" style="
+        border: 6px solid #eee;
+        border-top: 6px solid #5b77d1;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 20px;
+        animation: spin 1s linear infinite;">
+    </div>
+
+    <h3 style="margin-bottom:6px;">Uploading your file to server...</h3>
+
+    <p style="font-size:14px; color:#555;">
+      Do <b>NOT</b> close or refresh this page.<br>
+      Large files may take some time.
+    </p>
+
+  </div>
+</div>
+
+
+<!-- ============================================================= -->
+<!-- ⭐⭐⭐ Phase 2 Pending Modal (Queue / Running) -->
+<!-- ============================================================= -->
+<div id="pendingModal"
+     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.5); z-index:99999;
+            justify-content:center; align-items:center;">
+
+  <div style="background:white; padding:30px; border-radius:10px;
+              width:80%; max-width:420px; text-align:center;">
+
+    <div class="loader" style="
+        border: 6px solid #eee;
+        border-top: 6px solid #5b77d1;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 20px;
+        animation: spin 1s linear infinite;">
+    </div>
+
+    <h3 style="margin:0 0 10px;">Your job is running or waiting in queue...</h3>
+
+    <p style="margin:6px 0;">
+      Job ID:
+      <span id="pendingJobId" style="color:#0055aa; font-weight:600;"></span>
+    </p>
+
+    <p style="margin-top:10px; font-size:14px; color:#555;">
+      If you provided an email, we will notify you once the analysis is completed.  
+      You may leave this page now.
+    </p>
+
+    <p style="margin-top:12px; font-size:14px; color:#555;">
+      If not, please keep this page open, bookmark this link, or record your Job ID for later access.
+    </p>
+
+  </div>
+</div>
+
+<style>
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+
+<!-- ============================================================= -->
+<!-- ⭐ 保留原 preview / loader JS -->
+<!-- ============================================================= -->
+<script>
+/* ---------------- CSV Preview ---------------- */
+function csvToTable(csvText) {
+    const lines = csvText.split("\n").slice(0, 100);
+    let html = "<table style='border-collapse:collapse; width:100%; font-size:13px;'>";
+    for (let line of lines) {
+        if (!line.trim()) continue;
+        html += "<tr>";
+        const cols = line.split(",");
+        for (let c of cols) html += `<td style="border:1px solid #ccc; padding:4px;">${c}</td>`;
+        html += "</tr>";
+    }
+    html += "</table>";
+    return html;
+}
+
+async function previewFile(file) {
+    const text = await file.text();
+    document.getElementById("previewContent").innerHTML = csvToTable(text);
+    document.getElementById("previewModal").style.display = "flex";
+}
+document.getElementById("closePreviewBtn").onclick = () =>
+    document.getElementById("previewModal").style.display = "none";
+document.getElementById("previewModal").onclick = (e) => {
+    if (e.target.id === "previewModal") {
+        document.getElementById("previewModal").style.display = "none";
+    }
+};
+
+/* ---------------- Loader Progress ---------------- */
+const submitBtn = document.getElementById("submitBtn");
+submitBtn.disabled = true;
+submitBtn.style.opacity = 0.6;
+
+function startLocalReadProgress(file) {
+    document.getElementById("uploadProgressContainer").style.display = "block";
+    document.getElementById("uploadFileSize").innerText =
+        `File size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+
+    const bar = document.getElementById("uploadProgressBar");
+    const text = document.getElementById("uploadPercentText");
+
+    bar.style.width = "0%";
+    text.innerText = "0%";
+
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = 0.6;
+
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+
+    reader.onprogress = (e) => {
+        if (e.lengthComputable) {
+            const p = Math.round((e.loaded / e.total) * 100);
+            bar.style.width = p + "%";
+            text.innerText = p + "%";
+        }
+    };
+
+    reader.onloadend = () => {
+        bar.style.width = "100%";
+        text.innerText = "100% ✓";
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = 1;
+    };
+}
+
+fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    const MAX_SIZE = 300 * 1024 * 1024;
+
+    if (!file) return;
+    if (file.size > MAX_SIZE) {
+        alert("❌ File too large! (max: 300 MB)");
+        fileInput.value = "";
+        return;
+    }
+
+    previewBtn.disabled = false;
+    downloadBtn.disabled = false;
+
+    startLocalReadProgress(file);
+});
+
+previewBtn.onclick = () => {
+    const file = fileInput.files[0];
+    if (file) previewFile(file);
+};
+
+downloadBtn.onclick = () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = file.name;
+    a.click();
+    URL.revokeObjectURL(url);
+};
+
+document.getElementById("loadExampleBtn").onclick = async function () {
+    const resp = await fetch("/fetch-example");
+    const blob = await resp.blob();
+
+    const exampleFile = new File([blob], "example.csv", { type: "text/csv" });
+
+    const dt = new DataTransfer();
+    dt.items.add(exampleFile);
+    fileInput.files = dt.files;
+
+    previewBtn.disabled = false;
+    downloadBtn.disabled = false;
+
+    document.getElementById("example_flag").value = "true";
+
+    startLocalReadProgress(exampleFile);
+};
+</script>
+
+<!-- ============================================================= -->
+<!-- ⭐ run.js -->
+<!-- ============================================================= -->
+<script src="/static/js/run.js"></script>
+
+{% endblock %}
+
+
+
+
+
+

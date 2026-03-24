@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="tutorial-wrapper">
+
+<!-- ================= Tutorial Tabs ================= -->
+<div class="tutorial-tabs">
+  <a href="/tutorial" class="tab active">How to Run Analysis</a>
+  <a href="/tutorial/explain" class="tab">How to Interpret Results</a>
+</div>
+
+<h1>How to Run Analysis</h1>
+<p>Here you will find detailed instructions on how to use the scGHSOM web server.</p>
+<hr>
+
+<div class="tutorial-section">
+    <h2>1. Upload your data</h2>
+    <p>
+        Make sure your input file is in <strong>CSV format</strong> and under <strong>300 MB</strong>.<br>
+        If you do not have your own dataset, you may use our <strong>sample dataset</strong>.
+    </p>
+    <img src="{{ url_for('static', filename='images/figure1.png') }}" class="tutorial-img">
+</div>
+
+<hr>
+
+<div class="tutorial-section">
+    <h2>2. Fill in the hyperparameters</h2>
+
+    <!-- ===================== Quick Guide Entry (Tutorial) ===================== -->
+    <p id="quickGuideEntry"
+       style="margin:12px 0 18px; font-size:15px; color:#2f5fa7;">
+      ❓
+      <span id="openQuickGuide"
+            style="cursor:pointer; text-decoration:underline;">
+        Click here to see detailed explanations for each input field.
+      </span>
+    </p>
+    <!-- ===================================================================== -->
+
+    <img src="{{ url_for('static', filename='images/figure2.png') }}" class="tutorial-img">
+
+    <p style="margin-top:12px; color:#555;">
+        💡 If you provide an <strong>Email address</strong>, we will notify you by email once the analysis is completed.
+    </p>
+</div>
+
+<hr>
+
+<div class="tutorial-section">
+    <h2>3. Uploading in progress</h2>
+    <p>
+        ⚠️ <strong>Important:</strong> Do not leave the page during upload.
+    </p>
+    <img src="{{ url_for('static', filename='images/figure3.png') }}" class="tutorial-img">
+</div>
+
+<hr>
+
+<div class="tutorial-section">
+    <h2>4. Job dispatched</h2>
+    <p>Your file has now been successfully submitted.</p>
+    <ul>
+        <li>You may stay and wait.</li>
+        <li>You may record your <strong>Job ID</strong> or bookmark the link.</li>
+        <li>Email notification will be sent if provided.</li>
+    </ul>
+    <img src="{{ url_for('static', filename='images/figure4.png') }}" class="tutorial-img">
+</div>
+
+<hr>
+
+<div class="tutorial-section">
+    <h2>5. View your results</h2>
+    <ul>
+        <li>Enter your <strong>Job ID</strong> on the Results page.</li>
+        <li>Or click your bookmarked result link.</li>
+    </ul>
+    <img src="{{ url_for('static', filename='images/figure5_2.png') }}" class="tutorial-img">
+</div>
+
+<hr>
+
+<div class="tutorial-section">
+    <h2>6. Understanding the results</h2>
+
+    <h3>6.1 Evaluation metrics</h3>
+    <img src="{{ url_for('static', filename='images/figure6.png') }}" class="tutorial-img">
+
+    <h3>6.2 Cluster Feature Map</h3>
+    <img src="{{ url_for('static', filename='images/figure7.png') }}" class="tutorial-img">
+
+    <h3>6.3 Cluster Distribution Map</h3>
+    <img src="{{ url_for('static', filename='images/figure8.png') }}" class="tutorial-img">
+</div>
+
+<hr>
+
+</div>
+
+<!-- ===================== Quick Guide Overlay (Same as Run Analysis) ===================== -->
+<div id="quickGuideOverlay"
+     style="display:none; position:fixed; top:0; left:0;
+            width:100%; height:100%;
+            background:rgba(0,0,0,0.45);
+            z-index:99998;
+            justify-content:center; align-items:center;">
+
+  <div class="quick-guide"
+       style="background:white; width:85%; max-width:900px;
+              max-height:85%; overflow:auto;
+              border-radius:10px; padding:28px;
+              box-shadow:0 0 18px rgba(0,0,0,0.25);
+              position:relative;">
+
+    <button id="closeQuickGuide"
+            style="position:absolute; top:16px; right:16px;
+                   padding:6px 14px;
+                   border:none; border-radius:6px;
+                   background:#5b77d1; color:white;
+                   cursor:pointer;">
+      Close
+    </button>
+
+    <h2 style="margin-top:0;">
+      How to prepare your dataset and parameters
+    </h2>
+
+    <p style="color:#555;">
+      <b>scGHSOM</b> is an <b>unsupervised hierarchical clustering algorithm</b>
+      designed for <b>single-cell expression data analysis</b>.
+      The input dataset is expected to contain the following types of columns:
+    </p>
+
+    <ul>
+      <li><b>Index</b> – sample or cell identifiers (optional)</li>
+      <li><b>Feature</b> – numerical expression values used for clustering</li>
+      <li><b>Label</b> – known cell-type annotations for evaluation (optional)</li>
+    </ul>
+
+    <hr>
+
+    <h3>1. Index column (optional)</h3>
+    <p>
+      If your dataset contains an <b>index column</b>
+      (e.g., cell IDs or barcodes),
+      please specify its column name in the <b>Index</b> field.
+    </p>
+    <p style="color:#555;">
+      This prevents the index from being mistakenly treated as a feature.
+      Leave this field blank if no index column is present.
+    </p>
+
+    <hr>
+
+    <h3>2. Label column (optional)</h3>
+    <p>
+      If true cell-type annotations are available,
+      specify the corresponding column name in the <b>Label</b> field.
+    </p>
+    <ul>
+      <li>Enables correct computation of external evaluation metrics</li>
+      <li>Allows result interpretation based on known cell types</li>
+    </ul>
+    <p style="color:#b00020;">
+      The label column does <b>not</b> affect the clustering process itself.
+      Leave this field blank if labels are unavailable.
+    </p>
+
+    <hr>
+
+    <h3>3. Feature columns</h3>
+    <p>
+      All remaining columns are treated as <b>features</b>,
+      typically representing protein or gene expression levels.
+    </p>
+    <ul>
+      <li>All feature columns must be numeric</li>
+      <li>
+        If categorical or string-valued features are present,
+        <b>scGHSOM may not be suitable</b> for the dataset
+      </li>
+    </ul>
+
+    <hr>
+
+    <h3>4. Parameter settings (Tau₁ / Tau₂)</h3>
+    <p>
+      <b>Tau₁</b> controls horizontal expansion of the hierarchy.<br>
+      <b>Tau₂</b> controls vertical expansion.
+    </p>
+    <p>
+      Both parameters range from <b>0 to 1</b>.
+      If unsure, the default value <b>0.1</b> is recommended.
+    </p>
+    <p style="color:#555;">
+      For improved clustering accuracy, explore values around 0.1
+      using a step size of 0.05.
+    </p>
+
+  </div>
+</div>
+
+<script>
+document.getElementById("openQuickGuide").onclick = () => {
+  document.getElementById("quickGuideOverlay").style.display = "flex";
+};
+document.getElementById("closeQuickGuide").onclick = () => {
+  document.getElementById("quickGuideOverlay").style.display = "none";
+};
+document.getElementById("quickGuideOverlay").onclick = (e) => {
+  if (e.target.id === "quickGuideOverlay") {
+    document.getElementById("quickGuideOverlay").style.display = "none";
+  }
+};
+</script>
+
+{% endblock %}
+
+
+
+
+

@@ -1,0 +1,527 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* --- Navbar --- */
+.navbar {
+  background: linear-gradient(to bottom, #1e2c46, #0e1a2e);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 60px;
+}
+
+.logo {
+  color: #69bafc;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  position: relative;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+
+.nav-links a:hover {
+  color: #00bfff;
+}
+
+main {
+  padding: 30px 50px;
+}
+
+/* ================= Run Analysis Page ================= */
+
+.upload-section {
+  background-color: #f7f8fa;
+  border: 1px solid #d0d4dc;
+  border-radius: 8px;
+  padding: 25px;
+  width: calc(100% - 50px);
+  margin-left: 0px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.upload-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.upload-left {
+  flex: 1;
+  text-align: center;
+}
+
+.upload-left input[type="file"] {
+  display: block;
+  margin: 15px auto;
+}
+
+.upload-right {
+  flex: 1;
+}
+
+.upload-right label {
+  font-weight: bold;
+}
+
+.upload-right input {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.email-section {
+  margin-top: 20px;
+}
+
+.email-section input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+
+.submit-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.submit-btn {
+  background-color: #00bfff;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #009acd;
+}
+
+/* Job ID 區塊 */
+.jobid-section {
+  margin-top: 25px;
+  background-color: #eaf9ff;
+  border-left: 4px solid #00bfff;
+  padding: 15px;
+  width: 650px;
+  border-radius: 4px;
+}
+
+.jobid-text {
+  color: #004b70;
+  font-weight: bold;
+}
+
+/* ================= Summary Section ================= */
+
+.summary-section {
+  background-color: #f8f9fb;
+  border: 1px solid #d0d4dc;
+  border-radius: 8px;
+  padding: 25px;
+  width: calc(100% - 50px);
+  margin-left: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.search-box {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-box button {
+  background-color: #00bfff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-box button:hover {
+  background-color: #009acd;
+}
+
+.metrics-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 30px;
+}
+
+.metrics-box {
+  flex: 1;
+  background-color: #ffffff;
+  border: 1px solid #d0d4dc;
+  border-radius: 6px;
+  padding: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.metrics-box h3 {
+  margin-top: 0;
+  color: #004b70;
+}
+
+.leaf-section {
+  margin-top: 25px;
+  font-weight: bold;
+}
+
+.message {
+  font-weight: bold;
+}
+
+/* ================= Feature Section ================= */
+
+.feature-section {
+  background-color: #f8f9fb;
+  border: 1px solid #d0d4dc;
+  border-radius: 8px;
+  padding: 25px;
+  width: calc(100% - 50px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ================= Distribution Section ================= */
+
+.distribution-section {
+  background-color: #f8f9fb;
+  border: 1px solid #d0d4dc;
+  border-radius: 8px;
+  padding: 25px;
+  width: calc(100% - 50px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.distribution-result {
+  margin-top: 25px;
+  text-align: center;
+  min-height: 250px;
+  border: 1px dashed #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* iframe for distribution map */
+.dist-frame {
+  width: 100%;
+  height: 600px;
+  border: none;
+}
+
+.distribution-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+/* ================= Tutorial Section ================= */
+.tutorial-img {
+    max-width: 80%;
+    width: 80%;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+}
+
+/* ================= Tutorial Layout ================= */
+.tutorial-section {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.tutorial-wrapper hr {
+    margin: 40px 0;
+}
+
+/* ================= Quick Guide (Run Analysis) ================= */
+
+/* 入口文字（Run Analysis 上方那行） */
+#quickGuideEntry {
+  display: inline-block;
+  background: #eef4ff;
+  border-left: 4px solid #5b77d1;
+  padding: 10px 14px;
+  border-radius: 6px;
+}
+
+#quickGuideEntry span:hover {
+  color: #1e3f8f;
+}
+
+/* Overlay 背景（inline style 已處理 display / position） */
+#quickGuideOverlay {
+  backdrop-filter: blur(2px);
+}
+
+/* ================= 教學卡片本體 ================= */
+
+.quick-guide {
+  line-height: 1.65;
+  color: #333;
+}
+
+/* 標題 */
+.quick-guide h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #1e2c46;
+}
+
+/* ================= Step Section ================= */
+
+/* 每一個步驟標題（1–4） */
+.quick-guide h3 {
+  margin-top: 36px;          /* 關鍵：明顯拉開段落 */
+  margin-bottom: 14px;
+  padding-left: 12px;
+  border-left: 4px solid #5b77d1;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2f5fa7;
+}
+
+/* h3 底下第一段文字 */
+.quick-guide h3 + p {
+  margin-top: 10px;
+}
+
+/* 內文段落 */
+.quick-guide p {
+  margin: 8px 0 14px;
+  color: #444;
+  max-width: 760px;
+}
+
+/* 清單 */
+.quick-guide ul {
+  margin: 10px 0 18px 22px;
+  max-width: 760px;
+}
+
+.quick-guide li {
+  margin-bottom: 8px;
+}
+
+/* ================= 分隔線 ================= */
+
+.quick-guide hr {
+  border: none;
+  border-top: 1px dashed #ccc;
+  margin: 36px 0;            /* 關鍵：區塊感來源 */
+}
+
+/* ================= 強調警告（紅色那行） ================= */
+
+.quick-guide p[style*="color:#b00020"] {
+  background: #fff0f0;
+  padding: 10px 14px;
+  border-left: 4px solid #b00020;
+  border-radius: 4px;
+}
+
+/* ================= Tutorial Tabs ================= */
+
+.tutorial-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.tutorial-tabs .tab {
+  padding: 10px 16px;
+  text-decoration: none;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 3px solid transparent;
+}
+
+.tutorial-tabs .tab:hover {
+  color: #2f5fa7;
+}
+
+.tutorial-tabs .tab.active {
+  color: #2f5fa7;
+  border-bottom: 3px solid #5b77d1;
+}
+
+/* ================= Result Header Row ================= */
+
+.result-header-row {
+  display: flex;
+  justify-content: space-between;   /* 左右對齊 */
+  align-items: center;              /* 垂直置中 */
+  margin-bottom: 14px;              /* 接搜尋框 */
+}
+
+/* 左邊說明文字 */
+.result-intro {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* ================= Result Page – Quick Guide Box ================= */
+
+.result-guide-entry {
+  display: inline-block;
+  margin: 16px 0 12px;
+  padding: 10px 14px;
+  background: #eef4ff;              /* 淡藍底 */
+  border-left: 4px solid #5b77d1;    /* 左邊藍線 */
+  border-radius: 6px;
+  font-size: 15px;
+  color: #2f5fa7;
+}
+
+.result-guide-entry a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.result-guide-entry a:hover {
+  color: #1e3f8f;
+}
+
+/* ================= Tutorial Explain Enhancements ================= */
+
+/* General text readability */
+.tutorial-wrapper p {
+    line-height: 1.7;
+    color: #333;
+}
+
+/* Section titles */
+.tutorial-wrapper h2 {
+    margin-bottom: 14px;
+    color: #1f3a5f;
+}
+
+.tutorial-wrapper h3 {
+    margin-top: 24px;
+    margin-bottom: 10px;
+    color: #2f5fa7;
+}
+
+/* Info boxes (used for metrics & biological patterns) */
+.info-box {
+    background: #f6f9ff;
+    border-left: 4px solid #5b77d1;
+    padding: 16px 20px;
+    margin: 20px 0;
+    border-radius: 6px;
+}
+
+.info-box h3 {
+    margin-top: 0;
+    color: #1f3a5f;
+}
+
+.info-box ul {
+    margin: 10px 0 0 20px;
+}
+
+/* Ordered lists (step-by-step explanation) */
+.tutorial-wrapper ol {
+    margin-left: 22px;
+}
+
+.tutorial-wrapper li {
+    margin-bottom: 8px;
+}
+
+/* Tips & notes */
+.tip {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: #eef6ff;
+    border-radius: 6px;
+    color: #1f3a5f;
+    font-size: 14px;
+}
+
+.note {
+    margin-top: 10px;
+    color: #b00020;
+    font-size: 14px;
+}
+
+/* Image caption feeling (optional future use) */
+.tutorial-img + .img-caption {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    margin-top: -10px;
+}
+
+/* Improve spacing around images */
+.tutorial-img {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .tutorial-img {
+        width: 95%;
+        max-width: 95%;
+    }
+
+    .info-box {
+        padding: 14px 16px;
+    }
+}
+
+/* ================= Subsection separation ================= */
+.subsection {
+    margin-top: 40px;
+    padding-top: 28px;
+    border-top: 1px dashed #b8c7e6;
+}
+
+.subsection h3 {
+    font-weight: 600;
+}
+
+
+
+
+
+
